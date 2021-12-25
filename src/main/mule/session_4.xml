@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="2047072a-dac8-4dde-b82d-62816adbbbff" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="53d46ff2-b64f-4811-a84a-6045b5ac1fd2" />
+	<flow name="session_4Flow" doc:id="1b2cccaf-1972-44d0-8b21-d8eb6dbef3dd" >
+		<http:listener doc:name="Listener" doc:id="6c8a3f48-aa4a-43c7-a7ad-befe0e11b5f7" config-ref="HTTP_Listener_config" path="/test"/>
+		<logger level="INFO" doc:name="Logger" doc:id="d4cd7ac7-70b3-4ed0-a10f-97fdd5efca46" message="before setting variables "/>
+		<set-variable value="#[attributes.queryParams.name]" doc:name="name" doc:id="0dbc4378-9767-4a05-a764-ae5d86f0f151" variableName="name"/>
+		<set-variable value="#[attributes.method]" doc:name="Set Variable" doc:id="cffd1c79-d7c9-4b55-8763-da98a333ed64" variableName="methodname"/>
+		<flow-ref doc:name="Flow Reference" doc:id="d8dac0b1-a330-4444-8028-64bd51ec8193" name="session_4Flow1_privateflow" />
+		<ee:transform doc:name="Transform Message" doc:id="a5c8eaa7-75cb-4c87-beff-085be5af4b47" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	name : "success"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="99cf6190-0b2f-4996-ba1f-4db0870cc64e" message="#[payload]"/>
+	</flow>
+	<flow name="session_4Flow1_privateflow" doc:id="3ed00c94-6bde-4408-950f-e4935f5e1e9c" >
+		<logger level="INFO" doc:name="Logger" doc:id="6fcba8ea-58ab-48d0-b6a2-6dae3bb6327d" message="after setting veriables" />
+	</flow>
+	<sub-flow name="session_4Sub_sub_flow" doc:id="f68428b3-af6d-4bd2-bc4a-e96ed8e20b71" >
+		<set-payload value='#["Hi you are in sub flow"]' doc:name="sub flow payload" doc:id="e07e4c69-8a6d-4f9e-904e-6830c2fde144" />
+	</sub-flow>
+</mule>
